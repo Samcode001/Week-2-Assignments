@@ -32,6 +32,143 @@
 const express = require("express")
 const PORT = 3000;
 const app = express();
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken')
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+app.use(bodyParser.json())
+
+let users = []
+
+app.post('/signup', (req, res) => {
+  // let newUser = {
+  //   id: Math.floor(Math.random() * 1000000),
+  //   email: req.body.username,
+  //   password: req.body.password,
+  //   firstName: req.body.firstName,
+  //   lastName: req.body.lastName
+  // }
+
+  let userIndex = users.findIndex(elem => elem.email === req.body.email)
+  if (userIndex === -1) {
+    users.push(req.body)
+    res.status(201).send("Signup successful");
+  }
+  else
+    res.status(400).send("User already exits");
+
+  // var user = req.body;
+  // let userAlreadyExists = false;
+  // for (var i = 0; i<users.length; i++) {
+  //   if (users[i].email === user.email) {
+  //       userAlreadyExists = true;
+  //       break;
+  //   }
+  // }
+  // if (userAlreadyExists) {
+  //   res.sendStatus(400);
+  // } else {
+  //   users.push(user);
+  //   res.status(201).send("Signup successful");
+  // }
+})
+
+
+
+
+app.post('/login', (req, res) => {
+
+  // let searchIndex=users.findIndex(elem=>elem.email===req.body.email)
+  // if(searchIndex===-1)
+  //  res.status(401).send("Invalid Credentials")
+
+  // let userFound = null;
+  // for (let i = 0; i < users.length; i++) {
+  //   if (users[i].email === req.body.email && users[i].password === req.body.password) {
+  //     userFound = users[i];
+  //     break;
+  //   }
+  // }
+
+
+  // // const key = "Hello"
+  // // let user =
+  // if(userFound){
+  //   res.json( {
+  //     firstName: userFound.firstName,
+  //     lastName: userFound.lastName,
+  //     email: userFound.email
+  //   });
+  // }
+  // else
+  // res.sendStatus(401);
+
+
+  // const token = jwt.sign(user, key, { expiresIn: '1hr' })
+  // res.status(200).json(token)
+  var user = req.body;
+  let userFound = null;
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].email === user.email && users[i].password === user.password) {
+      userFound = users[i];
+      break;
+    }
+  }
+
+  if (userFound) {
+    res.json({
+      firstName: userFound.firstName,
+      lastName: userFound.lastName,
+      email: userFound.email
+    });
+  } else {
+    res.sendStatus(401);
+  }
+})
+
+app.get('/data', (req, res) => {
+  // let userFound=null;
+  // for (let i = 0; i < users; i++) {
+  //   if (users[i].email === req.body.email && users[i].password === req.body.password)
+  //   userFound=users[i];
+  // }
+
+  // if(userFound)
+  // res.json({
+  //   email: userFound.email,
+  //   firstName: userFound.firstName,
+  //   lastName: userFound.lastName
+  // })
+  // else
+  // res.status(401).send("Unauthorized")
+  var email = req.headers.email;
+  var password = req.headers.password;
+  let userFound = false;
+  for (var i = 0; i<users.length; i++) {
+    if (users[i].email === email && users[i].password === password) {
+        userFound = true;
+        break;
+    }
+  }
+
+  if (userFound) {
+    let usersToReturn = [];
+    for (let i = 0; i<users.length; i++) {
+        usersToReturn.push({
+            firstName: users[i].firstName,
+            lastName: users[i].lastName,
+            email: users[i].email
+        });
+    }
+    res.json({
+        users
+    });
+  } else {
+    res.sendStatus(401);
+  }
+})
+
+
+
 
 module.exports = app;
