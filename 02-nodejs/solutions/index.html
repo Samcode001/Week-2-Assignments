@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        const getTodo=()=>{
+            fetch('http://localhost:5000/todos',{
+                method:'GET'
+            }).then(async elem=>{
+                console.log(await elem);
+            })
+        }
+        getTodo()
+    </script>
+</head>
+<body>
+     title
+     <input type="text" >
+     description 
+     <input type="text">
+     <button type="submit" onclick="j()">GET</button>
+</body>
+</html>
